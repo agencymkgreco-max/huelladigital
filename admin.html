@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin — Contratos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f0e0c; --paper: #f7f4ee; --paper-dark: #ede9df;
+      --gold: #b8943f; --border: #c8bfa8; --success: #27635a; --red: #c0392b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #1a1814; color: var(--paper); font-family: 'DM Sans', sans-serif; min-height: 100vh; }
+
+    header {
+      background: #111009;
+      border-bottom: 1px solid #2a2620;
+      padding: 20px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header h1 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--paper); }
+    header span { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    #login-panel {
+      max-width: 360px; margin: 80px auto; padding: 0 20px;
+    }
+    #login-panel h2 { font-family: 'Playfair Display', serif; margin-bottom: 24px; }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #a09880; margin-bottom: 6px; }
+    .field input {
+      width: 100%; padding: 12px 14px;
+      background: #111009; border: 1px solid #2a2620; border-radius: 4px;
+      color: var(--paper); font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none;
+    }
+    .field input:focus { border-color: var(--gold); }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 4px; background: var(--gold); color: white;
+           font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 500; cursor: pointer;
+           letter-spacing: 0.08em; text-transform: uppercase; }
+
+    #main-panel { display: none; padding: 32px; max-width: 1100px; margin: 0 auto; }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-card {
+      background: #111009; border: 1px solid #2a2620; border-radius: 6px;
+      padding: 20px; text-align: center;
+    }
+    .stat-card .num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--gold); }
+    .stat-card .lbl { font-size: 0.75rem; color: #a09880; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+
+    .toolbar { display: flex; gap: 12px; margin-bottom: 20px; align-items: center; flex-wrap: wrap; }
+    .toolbar input {
+      flex: 1; min-width: 200px; padding: 10px 14px;
+      background: #111009; border: 1px solid #2a2620; border-radius: 4px;
+      color: var(--paper); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none;
+    }
+    .toolbar input:focus { border-color: var(--gold); }
+    .btn-sm {
+      padding: 10px 18px; border: none; border-radius: 4px; background: var(--gold); color: white;
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem; cursor: pointer; white-space: nowrap;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .btn-outline-sm {
+      padding: 10px 18px; border: 1px solid #2a2620; border-radius: 4px; background: none; color: #a09880;
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem; cursor: pointer; white-space: nowrap;
+    }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      text-align: left; padding: 10px 14px; font-size: 0.7rem;
+      text-transform: uppercase; letter-spacing: 0.1em; color: #a09880;
+      border-bottom: 1px solid #2a2620;
+    }
+    tbody tr { border-bottom: 1px solid #1e1c18; transition: background 0.15s; }
+    tbody tr:hover { background: #111009; }
+    tbody td { padding: 14px; font-size: 0.88rem; vertical-align: middle; }
+    .folio { font-family: monospace; font-size: 0.8rem; color: var(--gold); }
+    .badge {
+      display: inline-block; padding: 3px 8px; border-radius: 20px; font-size: 0.72rem;
+      font-weight: 500; letter-spacing: 0.05em;
+    }
+    .badge-ok  { background: rgba(39,99,90,0.25); color: #4caf96; }
+    .badge-no  { background: rgba(160,152,128,0.15); color: #a09880; }
+    .firma-thumb {
+      width: 80px; height: 36px; object-fit: contain;
+      background: white; border-radius: 3px; cursor: pointer;
+      border: 1px solid #2a2620;
+    }
+
+    /* Modal */
+    #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 100;
+             align-items: center; justify-content: center; }
+    #modal.open { display: flex; }
+    .modal-box {
+      background: #1a1814; border: 1px solid #2a2620; border-radius: 8px;
+      padding: 32px; max-width: 480px; width: 90%; position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px; background: none; border: none;
+      color: #a09880; font-size: 1.4rem; cursor: pointer;
+    }
+    .modal-box h3 { font-family: 'Playfair Display', serif; margin-bottom: 20px; }
+    .modal-box img { width: 100%; border-radius: 4px; background: white; }
+    .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #2a2620; font-size: 0.85rem; }
+    .detail-row .key { color: #a09880; }
+
+    .empty { text-align: center; padding: 60px 20px; color: #a09880; }
+    .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #2a2620; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #error-msg { color: #e57373; font-size: 0.85rem; margin-top: 10px; min-height: 20px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Panel Administrativo</h1>
+  <span id="user-label">No autenticado</span>
+</header>
+
+<!-- LOGIN -->
+<div id="login-panel">
+  <h2>Acceso Admin</h2>
+  <div class="field">
+    <label>Correo</label>
+    <input type="email" id="login-email" placeholder="admin@tuempresa.com" />
+  </div>
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" id="login-pass" placeholder="••••••••" />
+  </div>
+  <button class="btn" id="btn-login">Ingresar</button>
+  <p id="error-msg"></p>
+</div>
+
+<!-- MAIN -->
+<div id="main-panel">
+  <div class="stats">
+    <div class="stat-card"><div class="num" id="stat-total">—</div><div class="lbl">Total firmas</div></div>
+    <div class="stat-card"><div class="num" id="stat-bio">—</div><div class="lbl">Con biométrico</div></div>
+    <div class="stat-card"><div class="num" id="stat-hoy">—</div><div class="lbl">Hoy</div></div>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="search" placeholder="Buscar por nombre o folio…" />
+    <button class="btn-sm" onclick="loadFirmas()">Actualizar</button>
+    <button class="btn-outline-sm" onclick="exportCSV()">Exportar CSV</button>
+    <button class="btn-outline-sm" id="btn-logout">Cerrar sesión</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Folio</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Fecha</th>
+        <th>Biométrico</th>
+        <th>Firma</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-body"></tbody>
+  </table>
+  <div class="empty" id="empty-msg" style="display:none;">No se encontraron registros.</div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div id="modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3 id="modal-nombre">Detalle</h3>
+    <img id="modal-firma" src="" alt="Firma" style="margin-bottom:20px;" />
+    <div id="modal-details"></div>
+  </div>
+</div>
+
+<script src="js/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+const db = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+
+let allFirmas = [];
+
+// ── Login ──────────────────────────────────────────
+document.getElementById('btn-login').addEventListener('click', async () => {
+  const email = document.getElementById('login-email').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const err   = document.getElementById('error-msg');
+  err.textContent = '';
+  if (!email || !pass) { err.textContent = 'Completa los campos.'; return; }
+
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pass });
+  if (error) { err.textContent = error.message; return; }
+
+  document.getElementById('login-panel').style.display = 'none';
+  document.getElementById('main-panel').style.display  = 'block';
+  document.getElementById('user-label').textContent    = data.user.email;
+  loadFirmas();
+});
+
+document.getElementById('btn-logout').addEventListener('click', async () => {
+  await db.auth.signOut();
+  location.reload();
+});
+
+// ── Cargar firmas ──────────────────────────────────
+async function loadFirmas() {
+  const tbody = document.getElementById('tabla-body');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;"><div class="spinner"></div></td></tr>';
+
+  const { data, error } = await db.from('firmas').select('*').order('fecha_firma', { ascending: false });
+  if (error) { tbody.innerHTML = `<tr><td colspan="6" style="color:#e57373;padding:20px;">${error.message}</td></tr>`; return; }
+
+  allFirmas = data || [];
+  renderTable(allFirmas);
+  updateStats(allFirmas);
+}
+
+function updateStats(data) {
+  document.getElementById('stat-total').textContent = data.length;
+  document.getElementById('stat-bio').textContent   = data.filter(r => r.biometrico_verificado).length;
+  const hoy = new Date().toDateString();
+  document.getElementById('stat-hoy').textContent   = data.filter(r => new Date(r.fecha_firma).toDateString() === hoy).length;
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('tabla-body');
+  const empty = document.getElementById('empty-msg');
+
+  if (!data.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td class="folio">${r.folio || '—'}</td>
+      <td>${esc(r.nombre)}</td>
+      <td style="color:#a09880;font-size:0.82rem;">${esc(r.email || '—')}</td>
+      <td style="font-size:0.82rem;color:#a09880;">${formatDate(r.fecha_firma)}</td>
+      <td><span class="badge ${r.biometrico_verificado ? 'badge-ok' : 'badge-no'}">${r.biometrico_verificado ? '✓ Sí' : 'No'}</span></td>
+      <td>${r.firma_url ? `<img class="firma-thumb" src="${r.firma_url}" onclick='showModal(${JSON.stringify(r)})' title="Ver firma" />` : '—'}</td>
+    </tr>
+  `).join('');
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function formatDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' });
+}
+
+// ── Búsqueda ───────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase();
+  renderTable(allFirmas.filter(r =>
+    (r.nombre || '').toLowerCase().includes(q) ||
+    (r.folio  || '').toLowerCase().includes(q) ||
+    (r.email  || '').toLowerCase().includes(q)
+  ));
+});
+
+// ── Modal detalle ──────────────────────────────────
+function showModal(r) {
+  document.getElementById('modal-nombre').textContent = r.nombre;
+  document.getElementById('modal-firma').src = r.firma_url || '';
+  document.getElementById('modal-details').innerHTML = [
+    ['Folio', r.folio],
+    ['Email', r.email || '—'],
+    ['Fecha', formatDate(r.fecha_firma)],
+    ['Biométrico', r.biometrico_verificado ? 'Sí ✓' : 'No'],
+    ['IP cliente', r.ip_cliente || '—'],
+  ].map(([k, v]) => `<div class="detail-row"><span class="key">${k}</span><span>${esc(v)}</span></div>`).join('');
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+
+// ── Exportar CSV ───────────────────────────────────
+function exportCSV() {
+  const headers = ['folio','nombre','email','fecha_firma','biometrico_verificado','ip_cliente','firma_url'];
+  const rows = allFirmas.map(r => headers.map(h => `"${(r[h] ?? '').toString().replace(/"/g,'""')}"`).join(','));
+  const csv  = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = `contratos_${Date.now()}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
