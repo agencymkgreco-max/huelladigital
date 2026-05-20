@@ -11,10 +11,10 @@ const CONFIG = {
   // 2. Ruta a tu contrato PDF
   //    Opción A: súbelo a tu repo de GitHub y pon la ruta relativa
   //    Opción B: súbelo a Supabase Storage y pon la URL pública
-  CONTRACT_PDF_URL: './contrato.pdf',
+  CONTRACT_PDF_URL: 'contrato.pdf',
 
   // 3. Nombre de tu empresa / marca (aparece en encabezado)
-  COMPANY_NAME: 'Mi Empresa',
+  COMPANY_NAME: 'Smitt-Dent',
 
   // 4. Bucket de Supabase Storage donde se guardan las firmas
   STORAGE_BUCKET: 'firmas',
