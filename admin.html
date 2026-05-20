@@ -28,8 +28,8 @@
         <h2>🔐 Acceso Administrativo</h2>
         <p>Smitt-Dent</p>
         
-        <input type="text" id="admin-user" placeholder="Usuario" value="admin">
-        <input type="password" id="admin-pass" placeholder="Contraseña" value="smittdent2025">
+        <input type="text" id="admin-user" placeholder="Usuario">
+        <input type="password" id="admin-pass" placeholder="Contraseña">
         
         <button onclick="loginAdmin()">Ingresar</button>
         
@@ -81,7 +81,7 @@
       const user = document.getElementById('admin-user').value;
       const pass = document.getElementById('admin-pass').value;
 
-      if (user === "admin" && pass === "smittdent2025") {
+      if (user === "Smitt_DentJiutepec" && pass === "Smitt2026") {
         isLoggedIn = true;
         document.getElementById('login-screen').classList.add('hidden');
         document.getElementById('admin-panel').classList.remove('hidden');
@@ -118,7 +118,6 @@
         tbody.appendChild(row);
       });
 
-      // Actualizar contadores
       document.getElementById('total-firmas').textContent = data.length;
     }
 
@@ -128,7 +127,6 @@
 
     function exportarCSV() {
       alert("Funcionalidad de exportar CSV en desarrollo...");
-      // Podemos implementarla después si quieres
     }
 
     function logout() {
@@ -137,7 +135,6 @@
       isLoggedIn = false;
     }
 
-    // Permitir Enter en el login
     document.getElementById('admin-pass').addEventListener('keypress', e => {
       if (e.key === 'Enter') loginAdmin();
     });
