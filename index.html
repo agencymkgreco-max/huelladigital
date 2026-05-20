@@ -1,1 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firma de Contrato - Smitt-Dent</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f8f5f0; }
+    header {
+      background: #27635a;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    header h1 { margin: 0; font-size: 1.5rem; }
+    .admin-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .admin-btn:hover {
+      background: white;
+      color: #27635a;
+    }
+    .container { max-width: 900px; margin: 30px auto; padding: 20px; }
+    /* El resto de estilos se mantienen igual */
+  </style>
+</head>
+<body>
 
+  <!-- HEADER CON BOTÓN ADMIN -->
+  <header>
+    <h1>Smitt-Dent</h1>
+    <a href="admin.html" class="admin-btn" target="_blank">
+      <i class="fas fa-shield-alt"></i> ADMIN
+    </a>
+  </header>
+
+  <div class="container">
+
+    <!-- El resto del contenido original -->
+    <h2 style="text-align:center; color:#27635a;">Firma de Contrato Digital</h2>
+    <p style="text-align:center;">Proceso de firma digital segura</p>
+
+    <!-- Steps Dots -->
+    <div style="text-align:center; margin:30px 0;">
+      <span class="step-dot active" id="dot-1">1</span>
+      <span class="step-dot" id="dot-2">2</span>
+      <span class="step-dot" id="dot-3">3</span>
+    </div>
+
+    <!-- Paso 1 -->
+    <div id="step-1" class="step active">
+      <h3>Paso 1 de 3 - Identificación</h3>
+      <input type="text" id="nombre" placeholder="Nombre completo" style="width:100%; padding:12px; margin:10px 0;">
+      <input type="email" id="email" placeholder="Correo electrónico (opcional)" style="width:100%; padding:12px; margin:10px 0;">
+      <button id="btn-step1" style="width:100%; padding:14px; background:#27635a; color:white; border:none; border-radius:8px;">Continuar al contrato</button>
+    </div>
+
+    <!-- Paso 2 -->
+    <div id="step-2" class="step hidden">
+      <h3>Paso 2 de 3 - Lectura del Contrato</h3>
+      <div id="contract-viewer" style="height:500px; border:1px solid #ccc; margin:15px 0;"></div>
+      <label>
+        <input type="checkbox" id="check-acepto"> He leído, comprendido y acepto los términos y condiciones del contrato.
+      </label>
+      <button id="btn-step2" disabled style="width:100%; padding:14px; background:#27635a; color:white; border:none; border-radius:8px; margin-top:15px;">Proceder a la firma</button>
+    </div>
+
+    <!-- Paso 3 -->
+    <div id="step-3" class="step hidden">
+      <h3>Paso 3 de 3 - Firma Digital</h3>
+      <div id="canvas-wrapper" style="border:2px dashed #ccc; border-radius:8px; margin:15px 0;">
+        <canvas id="firma-canvas" width="700" height="200" style="width:100%;"></canvas>
+      </div>
+      <button id="btn-clear">Limpiar firma</button>
+
+      <div id="biometric-block">
+        <button id="btn-biometric">Verificar con huella / Face ID</button>
+      </div>
+
+      <button id="btn-submit" disabled style="width:100%; padding:16px; background:#27635a; color:white; border:none; border-radius:8px; font-size:1.1rem; margin-top:20px;">Firmar contrato</button>
+    </div>
+
+    <!-- Pantalla de Éxito -->
+    <div id="step-success" class="step hidden">
+      <h2>✅ Contrato firmado exitosamente</h2>
+      <p>Folio: <strong id="folio-num">-</strong></p>
+      <p>Guarda este número como comprobante.</p>
+    </div>
+
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#333; color:white; padding:12px 25px; border-radius:8px; display:none;"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
