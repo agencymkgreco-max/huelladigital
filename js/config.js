@@ -6,7 +6,7 @@ const CONFIG = {
   // 1. Tus credenciales de Supabase
   //    Ve a: https://supabase.com → tu proyecto → Settings → API
   SUPABASE_URL: 'sb_publistable_GjpPdeFrKsATmYlJuVNYCQ_7OiDEKSp',
-  SUPABASE_ANON_KEY: 'sb_secret_lxji8QRZdDnXdVbxodH0EQ_K0EwJzmO',
+  SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxycXRwemt0cm15b2hrbHR1Z3pvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyMzc5OTUsImV4cCI6MjA5NDgxMzk5NX0.pZpobZNUQvMYwlRAliDIJneJeCdJ5b3JySz1nUb6Jh8',
 
   // 2. Ruta a tu contrato PDF
   //    Opción A: súbelo a tu repo de GitHub y pon la ruta relativa
